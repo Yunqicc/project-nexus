@@ -30,6 +30,7 @@ jobs:
           # 请在 GitHub 仓库 Settings -> Secrets and variables -> Actions 中配置这些密钥
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_GA_ID: ${{ secrets.VITE_GA_ID }}
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

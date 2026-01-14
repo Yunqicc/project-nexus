@@ -1,11 +1,17 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Hero from "./components/Hero"
 import ProjectGallery from "./components/ProjectGallery"
 import VibeWall from "./components/VibeWall"
 import ThemeToggle from "./components/ThemeToggle"
 import SEO from "./components/SEO"
+import { initGA, logPageView } from "./lib/analytics"
 
 export default function App() {
+  useEffect(() => {
+    initGA();
+    logPageView();
+  }, []);
+
   return (
     <div className="min-h-screen">
       <SEO 
