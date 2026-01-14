@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { getSupabase } from "../lib/supabase"
 import { sanitizeMessage } from "../utils/filter"
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { MessageSquare, Send, Loader2 } from "lucide-react"
 
 type Message = {
   id: number
@@ -10,11 +11,6 @@ type Message = {
   created_at: string
 }
 
-/**
- * 读取最新留言
- * @returns 最新的留言列表（按时间倒序，最多 20 条）
- * @throws 当网络或服务异常时抛出错误
- */
 async function fetchMessages(client: SupabaseClient): Promise<Message[]> {
   const { data, error } = await client
     .from("guestbook")
@@ -25,13 +21,6 @@ async function fetchMessages(client: SupabaseClient): Promise<Message[]> {
   return data ?? []
 }
 
-/**
- * 提交一条留言
- * @param nickname 昵称
- * @param content 留言内容
- * @returns 插入的行信息（用于确认）
- * @throws 当校验或插入异常时抛出错误
- */
 async function submitMessage(client: SupabaseClient, nickname: string, content: string) {
   const { nickname: n, content: c } = sanitizeMessage(nickname, content)
   const { data, error } = await client
@@ -74,7 +63,6 @@ export default function VibeWall() {
       if (!client) throw new Error("未配置 Supabase 环境变量")
       await submitMessage(client, nickname, content)
       
-      // GA Event Tracking
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'submit_guestbook_message', {
           event_category: 'engagement',
@@ -94,51 +82,70 @@ export default function VibeWall() {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold">The Vibe Wall</h2>
-      <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-        匿名留言墙（最多显示最新 20 条）
+    <div className="glass-card p-6 md:p-8">
+      <div className="flex items-center gap-3 mb-2">
+        <MessageSquare className="text-brand" size={24} />
+        <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">The Vibe Wall</h2>
+      </div>
+      <p className="text-sm text-neutral-400 mb-6">
+        留下你的足迹，与世界分享你的想法（匿名 • 最新20条）
       </p>
 
-      <form onSubmit={onSubmit} className="mt-6 flex flex-col sm:grid sm:grid-cols-[200px,1fr,auto] gap-3">
-        <input
-          className="border rounded px-3 py-2 bg-white dark:bg-neutral-800"
-          placeholder="昵称（1-20）"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          maxLength={20}
-        />
-        <input
-          className="border rounded px-3 py-2 bg-white dark:bg-neutral-800"
-          placeholder="想说的话（1-50）"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          maxLength={50}
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 rounded bg-brand text-white disabled:opacity-60 active:scale-95 transition-transform"
-        >
-          {loading ? "发送中..." : "发送"}
-        </button>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-[200px,1fr] gap-4">
+          <input
+            className="glass-input"
+            placeholder="你的昵称"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            maxLength={20}
+            required
+          />
+          <div className="relative">
+            <input
+              className="glass-input w-full pr-12"
+              placeholder="写下你的想法..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              maxLength={50}
+              required
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-brand text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Send message"
+            >
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+            </button>
+          </div>
+        </div>
+        {error && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-lg">{error}</p>}
       </form>
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-
-      <ul className="mt-8 space-y-3">
-        {messages.map((m) => (
-          <li key={m.id} className="border rounded p-3">
-            <div className="text-sm text-neutral-500">
-              {m.nickname} • {new Date(m.created_at).toLocaleString()}
+      <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
+        {messages.map((m, i) => (
+          <div 
+            key={m.id} 
+            className="group p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all animate-in slide-in-from-bottom-2"
+            style={{ animationDelay: `${i * 50}ms` }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-medium text-brand-glow text-blue-400">{m.nickname}</span>
+              <span className="text-xs text-neutral-500">
+                {new Date(m.created_at).toLocaleString()}
+              </span>
             </div>
-            <div className="mt-1 break-all">{m.content}</div>
-          </li>
+            <p className="text-neutral-200 break-all leading-relaxed">{m.content}</p>
+          </div>
         ))}
         {messages.length === 0 && (
-          <li className="text-sm text-neutral-500">还没有留言，来当第一位访客吧！</li>
+          <div className="text-center py-12 text-neutral-500">
+            <MessageSquare size={48} className="mx-auto mb-4 opacity-20" />
+            <p>还没有留言，来当第一位访客吧！</p>
+          </div>
         )}
-      </ul>
+      </div>
     </div>
   )
 }

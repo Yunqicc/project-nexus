@@ -6,7 +6,74 @@
   color-scheme: light dark;
 }
 
-/* 防止暗黑模式初次闪烁 */
-html.dark body {
-  background-color: #0a0a0a;
+@layer base {
+  body {
+    @apply bg-[#050505] text-neutral-100 min-h-screen overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 50%),
+      radial-gradient(circle at 0% 50%, rgba(139, 92, 246, 0.15), transparent 50%),
+      radial-gradient(circle at 100% 50%, rgba(236, 72, 153, 0.15), transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl;
+  }
+  
+  .glass-input {
+    @apply bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-neutral-500 focus:outline-none focus:border-brand/50 focus:ring-1 focus:ring-brand/50 transition-all;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* 极光动画背景层 */
+.aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora-blob {
+  position: absolute;
+  filter: blur(80px);
+  opacity: 0.4;
+  border-radius: 50%;
+  animation: blob 10s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aurora-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: #3b82f6;
+  animation-delay: 0s;
+}
+
+.aurora-2 {
+  top: 20%;
+  right: -10%;
+  width: 40vw;
+  height: 40vw;
+  background: #8b5cf6;
+  animation-delay: 2s;
+}
+
+.aurora-3 {
+  bottom: -10%;
+  left: 20%;
+  width: 60vw;
+  height: 60vw;
+  background: #ec4899;
+  animation-delay: 4s;
 }

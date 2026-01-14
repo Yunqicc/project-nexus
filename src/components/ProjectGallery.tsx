@@ -1,40 +1,51 @@
 import React from "react"
 import { projects } from "../data/projects"
+import { Github, ExternalLink } from "lucide-react"
 
 export default function ProjectGallery() {
   return (
     <div>
-      <h2 className="text-2xl font-semibold">项目橱窗</h2>
-      <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">一些我做过的有趣作品</p>
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {projects.map((p) => (
+      <div className="flex items-center gap-4 mb-8">
+        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">项目橱窗</h2>
+        <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent"></div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((p, index) => (
           <article
             key={p.title}
-            className="border rounded-lg p-4 hover:shadow transition-transform hover:-translate-y-0.5"
+            className="group glass-card p-6 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] flex flex-col h-full"
+            style={{ animationDelay: `${index * 100}ms` }}
           >
-            <h3 className="font-semibold">{p.title}</h3>
-            <p className="mt-2 text-sm">{p.description}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="text-xl font-bold group-hover:text-brand transition-colors">{p.title}</h3>
+              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                {p.source && (
+                  <a href={p.source} target="_blank" rel="noreferrer" className="p-1.5 rounded-full hover:bg-white/10 text-white/70 hover:text-white transition-colors" title="View Source">
+                    <Github size={16} />
+                  </a>
+                )}
+                {p.demo && (
+                  <a href={p.demo} target="_blank" rel="noreferrer" className="p-1.5 rounded-full hover:bg-white/10 text-white/70 hover:text-white transition-colors" title="Live Demo">
+                    <ExternalLink size={16} />
+                  </a>
+                )}
+              </div>
+            </div>
+            
+            <p className="text-sm text-neutral-400 mb-6 flex-1 leading-relaxed">
+              {p.description}
+            </p>
+            
+            <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-white/5">
               {p.tags.map((t) => (
                 <span
                   key={t}
-                  className="px-2 py-0.5 text-xs rounded-full border bg-neutral-50 dark:bg-neutral-800"
+                  className="px-2.5 py-1 text-xs font-medium rounded-md bg-white/5 text-white/70 border border-white/5"
                 >
                   {t}
                 </span>
               ))}
-            </div>
-            <div className="mt-4 flex gap-3 text-sm">
-              {p.source && (
-                <a className="text-brand hover:underline" href={p.source} target="_blank" rel="noreferrer">
-                  查看源码
-                </a>
-              )}
-              {p.demo && (
-                <a className="text-brand hover:underline" href={p.demo} target="_blank" rel="noreferrer">
-                  在线体验
-                </a>
-              )}
             </div>
           </article>
         ))}
