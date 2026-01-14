@@ -73,6 +73,15 @@ export default function VibeWall() {
       const client = getSupabase()
       if (!client) throw new Error("未配置 Supabase 环境变量")
       await submitMessage(client, nickname, content)
+      
+      // GA Event Tracking
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'submit_guestbook_message', {
+          event_category: 'engagement',
+          event_label: 'success'
+        });
+      }
+
       setNickname("")
       setContent("")
       const list = await fetchMessages(client)
