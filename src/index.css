@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+/* 防止暗黑模式初次闪烁 */
+html.dark body {
+  background-color: #0a0a0a;
+}
