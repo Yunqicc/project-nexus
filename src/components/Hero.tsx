@@ -2,6 +2,16 @@ import React from "react"
 import Typewriter from "typewriter-effect"
 
 export default function Hero() {
+  const handleDownloadResume = () => {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'download_resume', {
+        event_category: 'engagement',
+        event_label: 'resume_pdf',
+        file_name: 'resume.pdf'
+      });
+    }
+  };
+
   return (
     <div className="py-16 text-center">
       <h1 className="text-3xl md:text-5xl font-bold">极简主义动态个人主页</h1>
@@ -25,7 +35,14 @@ export default function Hero() {
         <a className="opacity-80 hover:opacity-100" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
         <a className="opacity-80 hover:opacity-100" href="https://www.bilibili.com/" target="_blank" rel="noreferrer">Bilibili</a>
         <a className="opacity-80 hover:opacity-100" href="mailto:your@email.com">Email</a>
-        <a className="opacity-80 hover:opacity-100" href="/resume.pdf" download>下载简历</a>
+        <a 
+          className="opacity-80 hover:opacity-100" 
+          href="/resume.pdf" 
+          download 
+          onClick={handleDownloadResume}
+        >
+          下载简历
+        </a>
       </div>
     </div>
   )
