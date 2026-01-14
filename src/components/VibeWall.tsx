@@ -100,7 +100,7 @@ export default function VibeWall() {
         匿名留言墙（最多显示最新 20 条）
       </p>
 
-      <form onSubmit={onSubmit} className="mt-6 grid grid-cols-1 sm:grid-cols-[200px,1fr,auto] gap-3">
+      <form onSubmit={onSubmit} className="mt-6 flex flex-col sm:grid sm:grid-cols-[200px,1fr,auto] gap-3">
         <input
           className="border rounded px-3 py-2 bg-white dark:bg-neutral-800"
           placeholder="昵称（1-20）"
@@ -118,7 +118,7 @@ export default function VibeWall() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 rounded bg-brand text-white disabled:opacity-60"
+          className="px-4 py-2 rounded bg-brand text-white disabled:opacity-60 active:scale-95 transition-transform"
         >
           {loading ? "发送中..." : "发送"}
         </button>
@@ -132,7 +132,7 @@ export default function VibeWall() {
             <div className="text-sm text-neutral-500">
               {m.nickname} • {new Date(m.created_at).toLocaleString()}
             </div>
-            <div className="mt-1">{m.content}</div>
+            <div className="mt-1 break-all">{m.content}</div>
           </li>
         ))}
         {messages.length === 0 && (
